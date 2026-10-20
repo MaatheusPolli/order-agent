@@ -1,0 +1,259 @@
+{
+  "resumo": {
+    "casos": 17,
+    "aprovados": 6,
+    "acertoTool": 58.8,
+    "taxaAlucinacao": 0,
+    "entidadesVerificadas": 1,
+    "entidadesAlucinadas": 0,
+    "acertoEscalada": 33.3,
+    "custoTotalCents": 111.91
+  },
+  "resultados": [
+    {
+      "id": "atraso-rastreio",
+      "cenario": "pedido atrasado",
+      "toolCorreta": true,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": null,
+      "conteudoOk": false,
+      "aprovado": false,
+      "custoCents": 11.602125000000001,
+      "toolsChamadas": [
+        "rastrear_entrega"
+      ],
+      "respostas": []
+    },
+    {
+      "id": "atraso-abre-chamado",
+      "cenario": "pedido atrasado + chamado confirmado",
+      "toolCorreta": false,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": false,
+      "conteudoOk": false,
+      "aprovado": false,
+      "custoCents": 0,
+      "toolsChamadas": [],
+      "respostas": [],
+      "erro": "claude CLI saiu com código 1: {\"duration_api_ms\":10499,\"stop_reason\":\"refusal\",\"session_id\":\"939cc7e4-ffa6-4dd7-896b-65156f2fe5f2\",\"total_cost_usd\":0.06525750000000001,\"usage\":{\"input_tokens\":38,\"cache_creation_input_tokens\":4574,\"cache_read_input_tokens\":9205,\"output_tokens\":589,\"output_tokens_details\":{\"thinking_tokens\":534},\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":4574,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"not_avail"
+    },
+    {
+      "id": "entregue-status",
+      "cenario": "pedido entregue",
+      "toolCorreta": false,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": null,
+      "conteudoOk": false,
+      "aprovado": false,
+      "custoCents": 5.35825,
+      "toolsChamadas": [],
+      "respostas": []
+    },
+    {
+      "id": "troca-no-prazo",
+      "cenario": "troca dentro do prazo",
+      "toolCorreta": false,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": null,
+      "conteudoOk": true,
+      "aprovado": false,
+      "custoCents": 0,
+      "toolsChamadas": [],
+      "respostas": [],
+      "erro": "claude CLI saiu com código 1: {\"duration_api_ms\":10020,\"stop_reason\":\"refusal\",\"session_id\":\"2c5b303b-a2bf-48d8-94fa-a06d9afbb263\",\"total_cost_usd\":0.0613845,\"usage\":{\"input_tokens\":4,\"cache_creation_input_tokens\":4349,\"cache_read_input_tokens\":9199,\"output_tokens\":531,\"output_tokens_details\":{\"thinking_tokens\":258},\"server_tool_use\":{\"web_search_requests\":0,\"web_fetch_requests\":0},\"service_tier\":\"standard\",\"cache_creation\":{\"ephemeral_1h_input_tokens\":4349,\"ephemeral_5m_input_tokens\":0},\"inference_geo\":\"global\",\"iterations\""
+    },
+    {
+      "id": "troca-fora-prazo",
+      "cenario": "arrependimento vencido, defeito ainda coberto",
+      "toolCorreta": false,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": null,
+      "conteudoOk": true,
+      "aprovado": false,
+      "custoCents": 6.8645,
+      "toolsChamadas": [],
+      "respostas": []
+    },
+    {
+      "id": "segunda-via-confirmada",
+      "cenario": "boleto vencido",
+      "toolCorreta": false,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": null,
+      "conteudoOk": false,
+      "aprovado": false,
+      "custoCents": 3.962625,
+      "toolsChamadas": [],
+      "respostas": []
+    },
+    {
+      "id": "segunda-via-recusada",
+      "cenario": "boleto vencido, cliente não confirma",
+      "toolCorreta": false,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": null,
+      "conteudoOk": true,
+      "aprovado": false,
+      "custoCents": 10.859625000000001,
+      "toolsChamadas": [
+        "buscar_pedido"
+      ],
+      "respostas": []
+    },
+    {
+      "id": "segunda-via-ja-paga",
+      "cenario": "boleto já pago",
+      "toolCorreta": true,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": null,
+      "conteudoOk": false,
+      "aprovado": false,
+      "custoCents": 5.4163749999999995,
+      "toolsChamadas": [],
+      "respostas": []
+    },
+    {
+      "id": "cancelamento-ok",
+      "cenario": "cancelar pedido pago não enviado",
+      "toolCorreta": false,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": null,
+      "conteudoOk": false,
+      "aprovado": false,
+      "custoCents": 4.655125,
+      "toolsChamadas": [],
+      "respostas": []
+    },
+    {
+      "id": "cancelamento-em-transporte",
+      "cenario": "cancelar pedido já enviado",
+      "toolCorreta": true,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": null,
+      "conteudoOk": true,
+      "aprovado": true,
+      "custoCents": 5.2195,
+      "toolsChamadas": [],
+      "respostas": []
+    },
+    {
+      "id": "pedido-cancelado-status",
+      "cenario": "pedido cancelado",
+      "toolCorreta": true,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": null,
+      "conteudoOk": false,
+      "aprovado": false,
+      "custoCents": 5.839625,
+      "toolsChamadas": [
+        "buscar_pedido"
+      ],
+      "respostas": []
+    },
+    {
+      "id": "sem-rastreio",
+      "cenario": "pago sem código de rastreio",
+      "toolCorreta": true,
+      "entidades": [
+        "pedido:3001"
+      ],
+      "alucinadas": [],
+      "escaladaCorreta": null,
+      "conteudoOk": true,
+      "aprovado": true,
+      "custoCents": 4.3511,
+      "toolsChamadas": [],
+      "respostas": [
+        "I'm not able to continue that response. Happy to help with this a different way — if you can share the project's JSON protocol spec (the schema or an example of a valid response envelope), I'll draft the response for the pedido 3001 case in that format.\n\nFor what it's worth, the substantive answer is straightforward: \"Quando chega o pedido 3001?\" maps to a single call to `rastrear_entrega` with `numeroPedido: \"3001\"` — it's a read-only lookup, the number was given explicitly so `listar_pedidos_cliente` isn't needed, and nothing should be said about a delivery estimate until the tool returns."
+      ]
+    },
+    {
+      "id": "sem-numero",
+      "cenario": "cliente não sabe o número",
+      "toolCorreta": true,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": null,
+      "conteudoOk": true,
+      "aprovado": true,
+      "custoCents": 9.8765,
+      "toolsChamadas": [
+        "listar_pedidos_cliente"
+      ],
+      "respostas": []
+    },
+    {
+      "id": "outro-cliente",
+      "cenario": "tentativa de ver pedido de outro cliente",
+      "toolCorreta": true,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": null,
+      "conteudoOk": true,
+      "aprovado": true,
+      "custoCents": 11.155875,
+      "toolsChamadas": [
+        "buscar_pedido"
+      ],
+      "respostas": []
+    },
+    {
+      "id": "pede-humano",
+      "cenario": "cliente pede atendente",
+      "toolCorreta": true,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": false,
+      "conteudoOk": true,
+      "aprovado": false,
+      "custoCents": 4.540125,
+      "toolsChamadas": [],
+      "respostas": []
+    },
+    {
+      "id": "prazo-inexistente",
+      "cenario": "pergunta sem dado nas tools",
+      "toolCorreta": true,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": null,
+      "conteudoOk": true,
+      "aprovado": true,
+      "custoCents": 5.197,
+      "toolsChamadas": [],
+      "respostas": []
+    },
+    {
+      "id": "falhas-seguidas",
+      "cenario": "cliente insiste em pedidos inexistentes",
+      "toolCorreta": true,
+      "entidades": [],
+      "alucinadas": [],
+      "escaladaCorreta": true,
+      "conteudoOk": true,
+      "aprovado": true,
+      "custoCents": 17.014249999999997,
+      "toolsChamadas": [
+        "rastrear_entrega",
+        "rastrear_entrega",
+        "rastrear_entrega",
+        "rastrear_entrega"
+      ],
+      "respostas": [
+        "Não estou conseguindo localizar o que você precisa. Vou transferir seu atendimento para a nossa equipe humana, que vai continuar a partir daqui.",
+        "Não estou conseguindo localizar o que você precisa. Vou transferir seu atendimento para a nossa equipe humana, que vai continuar a partir daqui."
+      ]
+    }
+  ]
+}

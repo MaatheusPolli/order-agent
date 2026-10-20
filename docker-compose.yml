@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: order
+      POSTGRES_PASSWORD: order
+      POSTGRES_DB: order_agent
+    ports: ["5432:5432"]
+  erp-mock:
+    image: node:20-alpine
+    working_dir: /app
+    volumes: [".:/app"]
+    command: sh -c "corepack enable && pnpm install --frozen-lockfile && pnpm dev:erp"
+    environment:
+      PORT: "4001"
+    ports: ["4001:4001"]

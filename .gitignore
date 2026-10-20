@@ -1,0 +1,41 @@
+﻿# Ignorar planejamentos locais
+planejamento.md
+Catalogo-ideias.md
+Curriculo.md
+
+# Ignorar variáveis de ambiente
+.env
+.env.local
+.env.*.local
+
+# Ignorar dependências
+node_modules/
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Ignorar build
+dist/
+build/
+.next/
+out/
+
+# Ignorar logs
+*.log
+logs/
+
+# Ignorar IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Ignorar OS
+.DS_Store
+Thumbs.db
+
+# Artefatos gerados e configuração local do Claude
+coverage/
+*.tsbuildinfo
+.claude/

@@ -1,0 +1,4 @@
+{
+  "files": [],
+  "references": [{ "path": "apps/erp-mock" }, { "path": "packages/agent" }, { "path": "apps/api" }]
+}

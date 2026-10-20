@@ -1,0 +1,25 @@
+{
+  "name": "order-agent",
+  "license": "SEE LICENSE IN LICENSE",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@9.15.9",
+  "scripts": {
+    "test": "vitest run",
+    "test:cov": "vitest run --coverage",
+    "typecheck": "tsc -b",
+    "eval": "tsx eval/run-eval.ts",
+    "dev:api": "pnpm --filter @order-agent/api dev",
+    "dev:web": "pnpm --filter @order-agent/web dev",
+    "dev:erp": "pnpm --filter @order-agent/erp-mock dev"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.129.0",
+    "@types/node": "^20.14.0",
+    "@vitest/coverage-v8": "^2.1.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0",
+    "zod": "^3.25"
+  }
+}

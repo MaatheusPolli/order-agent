@@ -1,0 +1,14 @@
+[
+  {
+    "stop_reason": "tool_use",
+    "content": [
+      { "type": "tool_use", "id": "toolu_a", "name": "buscar_pedido", "input": { "numeroPedido": "1002" } },
+      { "type": "tool_use", "id": "toolu_b", "name": "buscar_pedido", "input": { "numeroPedido": "2001" } },
+      { "type": "tool_use", "id": "toolu_c", "name": "buscar_pedido", "input": { "numeroPedido": "x" } }
+    ]
+  },
+  {
+    "stop_reason": "end_turn",
+    "content": [{ "type": "text", "text": "Encontrei apenas o pedido 1002, entregue em 2026-09-24." }]
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "stop_reason": "tool_use",
+    "usage": { "input_tokens": 2100, "output_tokens": 90, "cache_read_input_tokens": 1800 },
+    "content": [
+      { "type": "text", "text": "Vou verificar o rastreio do seu pedido." },
+      { "type": "tool_use", "id": "toolu_01", "name": "rastrear_entrega", "input": { "numeroPedido": "1001" } }
+    ]
+  },
+  {
+    "stop_reason": "end_turn",
+    "usage": { "input_tokens": 2400, "output_tokens": 120, "cache_read_input_tokens": 1800 },
+    "content": [
+      {
+        "type": "text",
+        "text": "Seu pedido 1001 está em transporte pelos Correios (código BR123456789). A previsão era 2026-09-20, então ele está atrasado. Posso abrir um chamado para a equipe acompanhar?"
+      }
+    ]
+  }
+]
