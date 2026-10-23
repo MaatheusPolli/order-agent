@@ -4,7 +4,7 @@ Agente de atendimento pós-venda construído sobre Claude com **tool use**. Ele 
 
 > O agente não deveria poder cancelar seu pedido sozinho. Aqui, ele não pode: quem decide é o servidor, não o prompt.
 
-<!-- TODO: GIF do fluxo de confirmação (docs/confirmacao.gif) -->
+![Fluxo de confirmação: o agente pede confirmação antes de cancelar o pedido](docs/confirmacao.gif)
 
 ## Como funciona
 
@@ -101,7 +101,6 @@ Etapas 1 a 6 concluídas (ERP mock, tools, runner, política/auditoria, avaliaç
 Pendências conhecidas:
 
 - rodar `pnpm eval --live` e publicar `report/eval.md`
-- GIF do fluxo de confirmação
 
 ## Licença
 

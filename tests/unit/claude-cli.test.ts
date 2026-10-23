@@ -28,6 +28,41 @@ describe('mensagemDoCli', () => {
     expect(msg.usage.output_tokens).toBe(4);
   });
 
+  it('aceita o formato alternativo {"tipo":"tool_use"} que o modelo usa após tool_result', () => {
+    const msg = mensagemDoCli(
+      {
+        result: '```json\n{"tipo":"tool_use","tool_use":{"id":"toolu_2","name":"solicitar_cancelamento","input":{"numeroPedido":"3001"}},"raciocinio":"ok"}\n```',
+      },
+      'claude-opus-5',
+    );
+    expect(msg.stop_reason).toBe('tool_use');
+    expect(msg.content).toEqual([
+      expect.objectContaining({ type: 'tool_use', name: 'solicitar_cancelamento', input: { numeroPedido: '3001' } }),
+    ]);
+  });
+
+  it('aceita {"type":"tool_use","name","input"} seguido de justificativa em texto', () => {
+    const msg = mensagemDoCli(
+      {
+        result: '```json\n{"type":"tool_use","id":"toolu_2","name":"solicitar_cancelamento","input":{"numeroPedido":"3001"}}\n```\n\nJustificativa: pedido não enviado.',
+      },
+      'claude-opus-5',
+    );
+    expect(msg.stop_reason).toBe('tool_use');
+    expect(msg.content).toEqual([
+      expect.objectContaining({ type: 'tool_use', name: 'solicitar_cancelamento', input: { numeroPedido: '3001' } }),
+    ]);
+  });
+
+  it('usa structured_output (--json-schema) quando presente', () => {
+    const msg = mensagemDoCli(
+      { result: 'texto qualquer', structured_output: { text: '', tool_calls: [{ name: 'buscar_pedido', input: { numeroPedido: '3001' } }] } },
+      'claude-opus-5',
+    );
+    expect(msg.stop_reason).toBe('tool_use');
+    expect(msg.content).toEqual([expect.objectContaining({ type: 'tool_use', name: 'buscar_pedido', input: { numeroPedido: '3001' } })]);
+  });
+
   it('texto sem JSON vira resposta final, sem tool_use', () => {
     const msg = mensagemDoCli({ result: 'Seu pedido chegou.' }, 'claude-opus-5');
     expect(msg.stop_reason).toBe('end_turn');
