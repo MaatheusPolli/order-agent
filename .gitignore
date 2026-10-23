@@ -39,3 +39,6 @@ Thumbs.db
 coverage/
 *.tsbuildinfo
 .claude/
+
+# Rascunho pessoal, nunca versionar
+docs/post-linkedin.md
