@@ -98,9 +98,7 @@ TypeScript · `@anthropic-ai/sdk` (streaming, prompt caching) · Zod → JSON Sc
 
 Etapas 1 a 6 concluídas (ERP mock, tools, runner, política/auditoria, avaliação e UI); 13 arquivos de teste passando.
 
-Pendências conhecidas:
-
-- rodar `pnpm eval --live` e publicar `report/eval.md`
+Avaliação ao vivo (`report/eval.md`): 16 de 17 casos aprovados, com acerto de tool de 100% e 0% de alucinação. O caso `sem-rastreio` falha no conteúdo.
 
 ## Licença
 
