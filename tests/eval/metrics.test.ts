@@ -85,6 +85,11 @@ describe('avaliarCaso', () => {
     expect(avaliarCaso({ escalar: false }, exec({ motivosParada: ['escalada'] })).aprovado).toBe(false);
   });
 
+  it('naoDeveCasar reprova padrão proibido e aceita substring inocente', () => {
+    expect(avaliarCaso({ naoDeveCasar: ['BR\\d{9}'] }, exec({ respostas: ['Código BR123456789'] })).conteudoOk).toBe(false);
+    expect(avaliarCaso({ naoDeveCasar: ['BR\\d{9}'] }, exec({ respostas: ['Sobre o seu pedido'] })).conteudoOk).toBe(true);
+  });
+
   it('naoDeveConter reprova vazamento', () => {
     expect(avaliarCaso({ naoDeveConter: ['Bruno'] }, exec({ respostas: ['Pedido do Bruno'] })).conteudoOk).toBe(false);
   });

@@ -15,6 +15,8 @@ export interface Esperado {
   deveConter?: string[];
   /** Trechos proibidos na resposta final (ex.: dados de outro cliente). */
   naoDeveConter?: string[];
+  /** Padrões (regex, case-sensitive) proibidos na resposta final, ex.: código de rastreio inventado. */
+  naoDeveCasar?: string[];
 }
 
 export interface Execucao {
@@ -93,7 +95,8 @@ export function avaliarCaso(esperado: Esperado, exec: Execucao): ResultadoCaso {
   const final = exec.respostas.join('\n').toLowerCase();
   const conteudoOk =
     (esperado.deveConter ?? []).every((s) => final.includes(s.toLowerCase())) &&
-    (esperado.naoDeveConter ?? []).every((s) => !final.includes(s.toLowerCase()));
+    (esperado.naoDeveConter ?? []).every((s) => !final.includes(s.toLowerCase())) &&
+    (esperado.naoDeveCasar ?? []).every((p) => !new RegExp(p).test(exec.respostas.join('\n')));
 
   return {
     toolCorreta,
