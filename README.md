@@ -100,7 +100,7 @@ Etapas 1 a 6 concluídas (ERP mock, tools, runner, política/auditoria, avaliaç
 
 Avaliação ao vivo com a API (23/10, commitada no histórico): 16 de 17 casos aprovados, com acerto de tool de 100% e 0% de alucinação.
 
-Avaliação ao vivo com o adaptador `claude-cli` (26/10, `report/eval.md`): 15 de 17 aprovados, acerto de tool de 94,1%, 0% de alucinação. O caso `sem-rastreio` passa com o critério corrigido. Falham `atraso-rastreio` (o modelo não chamou tool) e `falhas-seguidas` (não escalou). Esses números não são comparáveis aos da API, porque o `claude-cli` não tem tool use nativo.
+Avaliação ao vivo com o adaptador `claude-cli` (26/10, `report/eval.md`): 17 de 17 aprovados, acerto de tool de 100%, 0% de alucinação e escalada correta em todos os casos. Uma execução anterior, antes do ajuste do contador de falhas, deu 15 de 17, o que mostra variação entre execuções. Esses números não são comparáveis aos da API, porque o `claude-cli` não tem tool use nativo.
 
 ## Licença
 

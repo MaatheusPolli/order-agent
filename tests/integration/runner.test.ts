@@ -157,6 +157,27 @@ describe('AgentRunner', () => {
     expect(llm.requests[1]!.messages).toHaveLength(3);
   });
 
+  it('RF06: listar pedidos com sucesso não zera o contador de falhas', async () => {
+    const busca = (id: string, numero: string): RecordedTurn => ({
+      stop_reason: 'tool_use',
+      content: [{ type: 'tool_use', id, name: 'buscar_pedido', input: { numeroPedido: numero } }],
+    });
+    const lista = (id: string): RecordedTurn => ({
+      stop_reason: 'tool_use',
+      content: [{ type: 'tool_use', id, name: 'listar_pedidos_cliente', input: {} }],
+    });
+    const llm = new ScriptedLlm([
+      busca('a', '9001'),
+      lista('l1'),
+      busca('b', '9002'),
+      { stop_reason: 'end_turn', content: [{ type: 'text', text: 'nunca chega aqui' }] },
+    ]);
+    const runner = new AgentRunner({ llm, registry, limits: { maxIterations: 20, maxCostCents: 1000, maxFalhas: 2 } });
+    const r = await runner.run(newConversation(), 'cadê meus pedidos 9001 e 9002?', ctxPara(CPF_ANA));
+    expect(r.reason).toBe('escalada');
+    expect(llm.requests).toHaveLength(3);
+  });
+
   it('RF06: escala após N falhas de entendimento seguidas; sucesso zera o contador', async () => {
     const busca = (id: string, numero: string): RecordedTurn => ({
       stop_reason: 'tool_use',

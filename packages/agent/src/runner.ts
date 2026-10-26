@@ -178,9 +178,11 @@ export class AgentRunner {
 
   /** Atualiza o contador de falhas de entendimento; true se chegou ao limite (RF06). */
   private contarFalhas(conv: Conversation, results: ToolResultBlock[]): boolean {
+    const nomes = nomesDasTools(conv);
     for (const r of results) {
       if (!r.is_error) {
-        conv.falhas = 0;
+        // Listar pedidos não prova que o agente entendeu o cliente: não zera o contador.
+        if (nomes.get(r.tool_use_id) !== 'listar_pedidos_cliente') conv.falhas = 0;
         continue;
       }
       const { erro } = JSON.parse(r.content as string) as { erro: string };
@@ -300,4 +302,13 @@ function textOf(content: ContentBlock[]): string {
     .filter((b): b is Extract<ContentBlock, { type: 'text' }> => b.type === 'text')
     .map((b) => b.text)
     .join('');
+}
+
+/** Nome da tool de cada tool_use id da última mensagem do assistente. */
+function nomesDasTools(conv: Conversation): Map<string, string> {
+  const ultima = [...conv.messages].reverse().find((m) => m.role === 'assistant');
+  const blocos = (ultima?.content ?? []) as ContentBlock[];
+  return new Map(
+    blocos.flatMap((b) => (b.type === 'tool_use' ? [[b.id, b.name] as [string, string]] : [])),
+  );
 }
