@@ -100,7 +100,9 @@ Etapas 1 a 6 concluídas (ERP mock, tools, runner, política/auditoria, avaliaç
 
 Avaliação ao vivo com a API (23/10, commitada no histórico): 16 de 17 casos aprovados, com acerto de tool de 100% e 0% de alucinação.
 
-Avaliação ao vivo com o adaptador `claude-cli` (26/10, `report/eval.md`): 17 de 17 aprovados, acerto de tool de 100%, 0% de alucinação e escalada correta em todos os casos. Uma execução anterior, antes do ajuste do contador de falhas, deu 15 de 17, o que mostra variação entre execuções. Esses números não são comparáveis aos da API, porque o `claude-cli` não tem tool use nativo.
+Avaliação ao vivo com o adaptador `claude-cli` (`report/eval.md`, modelo padrão `claude-opus-5-5`): 16 de 17 aprovados, acerto de tool de 94,1% e 0% de alucinação. A falha é `falhas-seguidas`: o modelo listou os pedidos, que o caso proíbe. Execuções anteriores com `claude-opus-5` deram 17/17 e 15/17, o que mostra variação entre execuções. Esses números não são comparáveis aos da API, porque o `claude-cli` não tem tool use nativo.
+
+O adaptador `claude-cli` usa streaming de texto, mas o primeiro texto visível sai em mediana de 4,1 s com `claude-opus-5-5`, acima da meta de 1,5 s. O preço do `claude-opus-5-5` em `policy/limits.ts` é presumido, igual ao do `claude-opus-5`. A validação do caminho da API (`AnthropicLlm`) segue pendente até haver acesso pago.
 
 ## Licença
 

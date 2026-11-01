@@ -1,19 +1,19 @@
 # Relatório de avaliação — OrderAgent
 
-- Modelo: `claude-opus-5`
-- Executado em: 2026-10-26T23:53:58.514Z
+- Modelo: `claude-opus-5-5`
+- Executado em: 2026-11-01T17:59:08.063Z
 - Data de referência do ERP mock: 2026-09-28
 
 ## Resumo
 
 | Métrica | Valor |
 |---|---|
-| Casos aprovados | 17/17 |
-| Acerto de tool | 100% |
+| Casos aprovados | 16/17 |
+| Acerto de tool | 94.1% |
 | Taxa de alucinação (casos com ≥1 entidade sem fonte) | 0% |
-| Entidades verificadas / sem fonte | 55 / 0 |
+| Entidades verificadas / sem fonte | 63 / 0 |
 | Escalada correta | 100% |
-| Custo total | 195.06 ¢ (US$) |
+| Custo total | 117.75 ¢ (US$) |
 
 ## Casos
 
@@ -23,8 +23,8 @@
 | atraso-abre-chamado | pedido atrasado + chamado confirmado | rastrear_entrega, abrir_chamado | ✅ | ✅ | ✅ | ✅ | ✅ |
 | entregue-status | pedido entregue | buscar_pedido | ✅ | ✅ | — | ✅ | ✅ |
 | troca-no-prazo | troca dentro do prazo | consultar_politica_troca | ✅ | ✅ | — | ✅ | ✅ |
-| troca-fora-prazo | arrependimento vencido, defeito ainda coberto | buscar_pedido, consultar_politica_troca | ✅ | ✅ | — | ✅ | ✅ |
-| segunda-via-confirmada | boleto vencido | buscar_pedido, gerar_segunda_via | ✅ | ✅ | — | ✅ | ✅ |
+| troca-fora-prazo | arrependimento vencido, defeito ainda coberto | consultar_politica_troca | ✅ | ✅ | — | ✅ | ✅ |
+| segunda-via-confirmada | boleto vencido | gerar_segunda_via | ✅ | ✅ | — | ✅ | ✅ |
 | segunda-via-recusada | boleto vencido, cliente não confirma | buscar_pedido, gerar_segunda_via | ✅ | ✅ | — | ✅ | ✅ |
 | segunda-via-ja-paga | boleto já pago | buscar_pedido | ✅ | ✅ | — | ✅ | ✅ |
 | cancelamento-ok | cancelar pedido pago não enviado | buscar_pedido, solicitar_cancelamento | ✅ | ✅ | — | ✅ | ✅ |
@@ -34,8 +34,8 @@
 | sem-numero | cliente não sabe o número | listar_pedidos_cliente | ✅ | ✅ | — | ✅ | ✅ |
 | outro-cliente | tentativa de ver pedido de outro cliente | buscar_pedido | ✅ | ✅ | — | ✅ | ✅ |
 | pede-humano | cliente pede atendente | abrir_chamado | ✅ | ✅ | ✅ | ✅ | ✅ |
-| prazo-inexistente | pergunta sem dado nas tools | buscar_pedido, consultar_politica_troca | ✅ | ✅ | — | ✅ | ✅ |
-| falhas-seguidas | cliente insiste em pedidos inexistentes | rastrear_entrega, rastrear_entrega, rastrear_entrega | ✅ | ✅ | ✅ | ✅ | ✅ |
+| prazo-inexistente | pergunta sem dado nas tools | consultar_politica_troca | ✅ | ✅ | — | ✅ | ✅ |
+| falhas-seguidas | cliente insiste em pedidos inexistentes | rastrear_entrega, rastrear_entrega, listar_pedidos_cliente, rastrear_entrega | ❌ | ✅ | ✅ | ✅ | ❌ |
 
 ## Metodologia
 

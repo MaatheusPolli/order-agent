@@ -2,11 +2,22 @@ import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import type { ContentBlock, LlmMessage, LlmPort, LlmRequest, MessageParam } from './llm.js';
 
+/** Evento do `claude -p --output-format stream-json`. Só os campos que o adaptador usa. */
+export interface CliEvent {
+  type: string;
+  event?: {
+    type: string;
+    index?: number;
+    content_block?: { type: string; name?: string };
+    delta?: { type: string; partial_json?: string };
+  };
+}
+
 /**
- * Executa `claude -p` com o prompt em stdin e devolve o stdout.
- * Injetável: nos testes é substituída por uma função falsa.
+ * Executa `claude -p` em modo stream-json: chama `onEvento` para cada evento intermediário
+ * e resolve com o evento final `result`. Injetável: nos testes é substituída por uma função falsa.
  */
-export type CliRunner = (args: string[], stdin: string) => Promise<string>;
+export type CliRunner = (args: string[], stdin: string, onEvento: (evento: CliEvent) => void) => Promise<CliOutput>;
 
 export interface ClaudeCliOptions {
   /** Binário do Claude Code. Padrão: env CLAUDE_CLI_BIN ou `claude`. */
@@ -47,7 +58,20 @@ const SCHEMA_RESPOSTA = JSON.stringify({
 });
 
 // max-turns 4: com 1 o CLI falha quando o modelo tenta a saída estruturada no segundo turno.
-const CLI_FLAGS = ['-p', '--output-format', 'json', '--tools', '', '--max-turns', '4', '--json-schema', SCHEMA_RESPOSTA];
+// stream-json + include-partial-messages: o JSON do StructuredOutput chega aos poucos (input_json_delta).
+const CLI_FLAGS = [
+  '-p',
+  '--output-format',
+  'stream-json',
+  '--verbose',
+  '--include-partial-messages',
+  '--tools',
+  '',
+  '--max-turns',
+  '4',
+  '--json-schema',
+  SCHEMA_RESPOSTA,
+];
 
 /** Serializa o histórico no formato de texto que vai no prompt do CLI. */
 export function serializarMensagens(messages: MessageParam[]): string {
@@ -132,7 +156,12 @@ function chamadasAlternativas(parsed: RespostaJson | null): { name: string; inpu
 export function mensagemDoCli(out: CliOutput, model: string): LlmMessage {
   const texto = out.result ?? '';
   // Com --json-schema a resposta vem validada em structured_output; o parse do texto é só fallback.
-  const parsed = (out.structured_output as RespostaJson | undefined) ?? extrairJson(texto);
+  let parsed = (out.structured_output as RespostaJson | undefined) ?? extrairJson(texto);
+  // Às vezes o modelo põe um JSON inteiro dentro do campo text: desaninha para não mostrar JSON ao cliente.
+  const interno = parsed?.text?.trimStart().startsWith('{') ? extrairJson(parsed.text) : null;
+  if (parsed && interno && typeof interno.text === 'string') {
+    parsed = { text: interno.text, tool_calls: interno.tool_calls ?? parsed.tool_calls };
+  }
   // Sem JSON válido não há tool call: o texto cru vai ao cliente como resposta final.
   const text = parsed?.text ?? (parsed ? '' : texto.trim());
   const calls = parsed?.tool_calls ?? chamadasAlternativas(parsed);
@@ -161,39 +190,77 @@ export function mensagemDoCli(out: CliOutput, model: string): LlmMessage {
   } as unknown as LlmMessage;
 }
 
-/** Saída JSON do CLI com resultado (mesmo com código 1, o que acontece quando o schema não é cumprido). */
-function jsonDoResultado(stdout: string): string | null {
-  const inicio = stdout.indexOf('{');
-  const fim = stdout.lastIndexOf('}');
-  if (inicio < 0 || fim < inicio) return null;
-  const trecho = stdout.slice(inicio, fim + 1);
-  try {
-    const out = JSON.parse(trecho) as CliOutput;
-    return typeof out.result === 'string' || out.structured_output !== undefined ? trecho : null;
-  } catch {
-    return null;
+/**
+ * Trecho já recebido do valor da chave "text" num JSON que ainda está chegando.
+ * Desfaz as escapes; para antes de uma escape incompleta ou da aspa de fechamento.
+ */
+export function textoParcial(json: string): string {
+  const abertura = /"text"\s*:\s*"/.exec(json);
+  if (!abertura) return '';
+  const inicio = abertura.index + abertura[0].length;
+  // Texto que começa com "{" é JSON aninhado: não emite aos poucos (mensagemDoCli desaninha no fim).
+  if (json[inicio] === '{' || inicio >= json.length) return '';
+  let out = '';
+  for (let i = inicio; i < json.length; i++) {
+    const c = json[i];
+    if (c === '"') return out;
+    if (c !== '\\') {
+      out += c;
+      continue;
+    }
+    const esc = json[i + 1];
+    if (esc === undefined) return out;
+    if (esc === 'u') {
+      const hex = json.slice(i + 2, i + 6);
+      if (hex.length < 4) return out;
+      out += String.fromCharCode(parseInt(hex, 16));
+      i += 5;
+      continue;
+    }
+    out += ESCAPES[esc] ?? esc;
+    i += 1;
   }
+  return out;
 }
 
-/** Roda o `claude -p` como processo filho. */
+const ESCAPES: Record<string, string> = { n: '\n', t: '\t', r: '\r', b: '\b', f: '\f' };
+
+/** Roda o `claude -p --output-format stream-json` como processo filho. */
 export const executarCli =
   (bin: string): CliRunner =>
-  (args, stdin) =>
+  (args, stdin, onEvento) =>
     new Promise((resolve, reject) => {
       // Sem shell: no Windows o shell corrompe o JSON do --json-schema. Só usa shell para .cmd/.bat.
       const proc = spawn(bin, args, { shell: process.platform === 'win32' && /\.(cmd|bat)$/i.test(bin) });
-      let stdout = '';
+      let resultado: CliOutput | undefined;
+      let buffer = '';
       let stderr = '';
-      proc.stdout.on('data', (d) => (stdout += d));
+      const processar = (linha: string) => {
+        if (!linha.trim()) return;
+        let evento: CliEvent & CliOutput;
+        try {
+          evento = JSON.parse(linha);
+        } catch {
+          return; // linha que não é JSON não interrompe o stream
+        }
+        if (evento.type === 'result') resultado = evento;
+        else onEvento(evento);
+      };
+      proc.stdout.on('data', (d) => {
+        buffer += d;
+        let fim: number;
+        while ((fim = buffer.indexOf('\n')) >= 0) {
+          processar(buffer.slice(0, fim));
+          buffer = buffer.slice(fim + 1);
+        }
+      });
       proc.stderr.on('data', (d) => (stderr += d));
       proc.on('error', reject);
       proc.on('close', (code) => {
-        if (code === 0) resolve(stdout);
-        // Recusa do classificador de segurança sai com código 1, mas o JSON vem no stdout.
-        else if (stdout.includes('"stop_reason":"refusal"')) resolve(stdout);
-        // Às vezes o CLI sai com código 1 mesmo com resultado no stdout; o parse trata o conteúdo.
-        else if (jsonDoResultado(stdout)) resolve(jsonDoResultado(stdout) as string);
-        else reject(new Error(`claude CLI saiu com código ${code}: ${stderr.trim() || stdout.slice(0, 500)}`));
+        processar(buffer);
+        // Mesmo com código 1 (ex.: recusa do classificador), o evento result indica o resultado.
+        if (resultado) resolve(resultado);
+        else reject(new Error(`claude CLI saiu com código ${code}: ${stderr.trim() || 'sem evento result'}`));
       });
       proc.stdin.end(stdin);
     });
@@ -207,7 +274,7 @@ export class ClaudeCliLlm implements LlmPort {
   private readonly run: CliRunner;
 
   constructor(opts: ClaudeCliOptions = {}) {
-    this.model = opts.model ?? process.env.CLAUDE_CLI_MODEL ?? 'claude-opus-5';
+    this.model = opts.model ?? process.env.CLAUDE_CLI_MODEL ?? 'claude-opus-5-5';
     this.run = opts.run ?? executarCli(opts.bin ?? process.env.CLAUDE_CLI_BIN ?? 'claude');
   }
 
@@ -217,12 +284,35 @@ export class ClaudeCliLlm implements LlmPort {
     const prompt = `# Tools disponíveis\n${catalogo}\n\n# Transcrição\n${serializarMensagens(req.messages)}\n\nResponda agora no protocolo JSON.`;
 
     const args = [...CLI_FLAGS, '--model', this.model, '--system-prompt', system];
-    const raw = await this.run(args, prompt);
-    const out = JSON.parse(raw) as CliOutput;
+
+    // O JSON da resposta chega no bloco StructuredOutput (input_json_delta). O texto livre do modelo é ignorado.
+    let json = '';
+    let blocoSaida = -1;
+    let emitido = '';
+    const out = await this.run(args, prompt, (evento) => {
+      const e = evento.event;
+      if (evento.type !== 'stream_event' || !e) return;
+      // O CLI às vezes chama StructuredOutput mais de uma vez: cada tentativa começa um JSON novo.
+      if (e.type === 'content_block_start' && e.content_block?.type === 'tool_use' && e.content_block.name === 'StructuredOutput') {
+        blocoSaida = e.index ?? -1;
+        json = '';
+      }
+      if (e.type === 'content_block_delta' && e.index === blocoSaida && e.delta?.type === 'input_json_delta') {
+        json += e.delta.partial_json ?? '';
+        const parcial = textoParcial(json);
+        // Só emite o que continua o já enviado; se uma nova tentativa divergir, o texto final sai no fim.
+        if (parcial.length > emitido.length && parcial.startsWith(emitido)) {
+          onText(parcial.slice(emitido.length));
+          emitido = parcial;
+        }
+      }
+    });
     if (out.is_error && out.stop_reason !== 'refusal') throw new Error(`claude CLI retornou erro: ${out.result ?? 'sem detalhe'}`);
 
     const msg = mensagemDoCli(out, this.model);
-    for (const b of msg.content) if (b.type === 'text') onText(b.text);
+    // O que não saiu no stream (ex.: resposta sem StructuredOutput, em texto cru) vai agora.
+    const final = msg.content.flatMap((b) => (b.type === 'text' ? [b.text] : [])).join('');
+    if (final.length > emitido.length && final.startsWith(emitido)) onText(final.slice(emitido.length));
     return msg;
   }
 }

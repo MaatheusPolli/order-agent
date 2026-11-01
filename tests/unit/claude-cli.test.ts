@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ClaudeCliLlm, extrairJson, mensagemDoCli, serializarMensagens } from '../../packages/agent/src/ports/claude-cli.js';
+import { ClaudeCliLlm, extrairJson, mensagemDoCli, serializarMensagens, textoParcial } from '../../packages/agent/src/ports/claude-cli.js';
 
 const tools = [{ name: 'buscar_pedido', description: 'x', input_schema: { type: 'object' } }];
 
@@ -90,7 +90,7 @@ describe('ClaudeCliLlm', () => {
       run: async (a, s) => {
         args = a;
         stdin = s;
-        return JSON.stringify({ result: '{"text":"Olá","tool_calls":[]}', usage: { input_tokens: 1, output_tokens: 1 } });
+        return { result: '{"text":"Olá","tool_calls":[]}', usage: { input_tokens: 1, output_tokens: 1 } };
       },
     });
     const deltas: string[] = [];
@@ -110,7 +110,47 @@ describe('ClaudeCliLlm', () => {
   });
 
   it('erro reportado pelo CLI vira exceção', async () => {
-    const llm = new ClaudeCliLlm({ run: async () => JSON.stringify({ is_error: true, result: 'limite' }) });
+    const llm = new ClaudeCliLlm({ run: async () => ({ is_error: true, result: 'limite' }) });
     await expect(llm.stream({ system: '', tools, messages: [] }, () => {})).rejects.toThrow('limite');
+  });
+
+  it('emite o texto à medida que o JSON do StructuredOutput chega', async () => {
+    const pedacos = ['{"te', 'xt": "Seu pedido ', 'saiu\\n', 'hoje.", "tool_', 'calls": []}'];
+    const llm = new ClaudeCliLlm({
+      run: async (_a, _s, onEvento) => {
+        onEvento({ type: 'stream_event', event: { type: 'content_block_start', index: 0, content_block: { type: 'text' } } });
+        onEvento({ type: 'stream_event', event: { type: 'content_block_delta', index: 0, delta: { type: 'text_delta', partial_json: 'ruído' } } });
+        onEvento({ type: 'stream_event', event: { type: 'content_block_start', index: 1, content_block: { type: 'tool_use', name: 'StructuredOutput' } } });
+        for (const p of pedacos) onEvento({ type: 'stream_event', event: { type: 'content_block_delta', index: 1, delta: { type: 'input_json_delta', partial_json: p } } });
+        return { result: '', structured_output: { text: 'Seu pedido saiu\nhoje.', tool_calls: [] }, usage: {} };
+      },
+    });
+    const deltas: string[] = [];
+    const msg = await llm.stream({ system: '', tools, messages: [] }, (d) => deltas.push(d));
+
+    expect(deltas.join('')).toBe('Seu pedido saiu\nhoje.');
+    expect(deltas.length).toBeGreaterThan(1);
+    expect(msg.content).toEqual([expect.objectContaining({ type: 'text', text: 'Seu pedido saiu\nhoje.' })]);
+  });
+
+  it('texto cru sem StructuredOutput é emitido no fim, sem duplicar', async () => {
+    const llm = new ClaudeCliLlm({ run: async () => ({ result: 'Resposta em texto cru', usage: {} }) });
+    const deltas: string[] = [];
+    await llm.stream({ system: '', tools, messages: [] }, (d) => deltas.push(d));
+    expect(deltas.join('')).toBe('Resposta em texto cru');
+  });
+
+  it('desaninha JSON colocado dentro do campo text', () => {
+    const aninhado = '{"text": "Seu pedido saiu.", "tool_calls": []}';
+    const msg = mensagemDoCli({ result: '', structured_output: { text: aninhado, tool_calls: [] } } as any, 'm');
+    expect(msg.content).toEqual([expect.objectContaining({ type: 'text', text: 'Seu pedido saiu.' })]);
+    expect(textoParcial(`{"text": "${aninhado}`)).toBe('');
+  });
+
+  it('textoParcial desfaz escapes e para antes de escape incompleta', () => {
+    expect(textoParcial('{"text": "a\\"b\\u00e9')).toBe('a"bé');
+    expect(textoParcial('{"text": "linha\\nfim", "x')).toBe('linha\nfim');
+    expect(textoParcial('{"text": "quebra\\')).toBe('quebra');
+    expect(textoParcial('{"tool_calls": []')).toBe('');
   });
 });

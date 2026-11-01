@@ -1,13 +1,13 @@
 {
   "resumo": {
     "casos": 17,
-    "aprovados": 17,
-    "acertoTool": 100,
+    "aprovados": 16,
+    "acertoTool": 94.1,
     "taxaAlucinacao": 0,
-    "entidadesVerificadas": 55,
+    "entidadesVerificadas": 63,
     "entidadesAlucinadas": 0,
     "acertoEscalada": 100,
-    "custoTotalCents": 195.06
+    "custoTotalCents": 117.75
   },
   "resultados": [
     {
@@ -25,12 +25,12 @@
       "escaladaCorreta": null,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 9.42785,
+      "custoCents": 5.067975000000001,
       "toolsChamadas": [
         "rastrear_entrega"
       ],
       "respostas": [
-        "{\"text\": \"Oi! Consultei o rastreio do pedido 1001: ele está em transporte pelos Correios, código BR123456789, com previsão de entrega para 20/09/2026 — e o sistema indica que a entrega está atrasada em relação a essa previsão. Últimos eventos registrados: objeto postado em 12/09 (São Paulo/SP) e em trânsito para a unidade de distribuição em 15/09 (Curitiba/PR). Não tenho aqui uma nova previsão de entrega. Se quiser, abro um chamado de atraso para a equipe de atendimento verificar com a transportadora — me confirma que eu registro.\", \"tool_calls\": []}"
+        "Oi! Seu pedido 1001 está atrasado. A entrega estava prevista para 20/09/2026 e o pedido ainda aparece como em transporte pelos Correios (código de rastreio BR123456789). O que aparece no rastreio até agora:\n- 12/09/2026, São Paulo/SP: objeto postado\n- 15/09/2026, Curitiba/PR: em trânsito para unidade de distribuição\n\nNão há atualização desde 15/09 e eu não tenho uma nova previsão de entrega. Posso abrir um chamado de atraso para a nossa equipe verificar com a transportadora. Quer que eu abra?"
       ]
     },
     {
@@ -49,13 +49,13 @@
       "escaladaCorreta": true,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 14.851825000000002,
+      "custoCents": 9.424525000000001,
       "toolsChamadas": [
         "rastrear_entrega",
         "abrir_chamado"
       ],
       "respostas": [
-        "{\"text\": \"Chamado aberto! Registrei o atraso do pedido 1001 para a equipe de atendimento. Protocolo: CH-20260928-0001, criado em 28/09/2026. Dados do rastreio que constam no chamado:\\n- Código: BR123456789 (Correios)\\n- Status: em transporte, com atraso confirmado\\n- Previsão de entrega: 20/09/2026\\n- Último evento: 15/09/2026, Curitiba/PR — em trânsito para unidade de distribuição\\n\\nA equipe vai dar sequência pelo protocolo. Posso ajudar em algo mais?\", \"tool_calls\": []}"
+        "Pronto! Abri o chamado do seu pedido 1001. O protocolo é **CH-20260928-0001** (aberto em 28/09/2026). Pelo rastreio, o pedido está com os Correios (código BR123456789) e já passou da data prevista de entrega, que era 20/09/2026. A última atualização foi em 15/09/2026, em Curitiba/PR: \\\"Em trânsito para unidade de distribuição\\\". Agora a equipe de atendimento vai analisar o caso. Guarde o protocolo para acompanhar. Posso ajudar com mais alguma coisa?"
       ]
     },
     {
@@ -65,6 +65,7 @@
       "entidades": [
         "data:09-24",
         "data:09-01",
+        "valor:4990",
         "valor:9980",
         "pedido:1002"
       ],
@@ -72,12 +73,12 @@
       "escaladaCorreta": null,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 8.8977,
+      "custoCents": 4.686025,
       "toolsChamadas": [
         "buscar_pedido"
       ],
       "respostas": [
-        "O pedido 1002 já foi entregue em 24/09/2026. Resumo:\n\n- Itens: 2x Camiseta Algodão M (CAM-02)\n- Total: R$ 99,80\n- Pagamento: Pix\n- Pedido feito em: 01/09/2026\n\nPosso ajudar com algo mais, como informações sobre troca ou devolução?"
+        "O pedido 1002 foi **entregue** em 24/09/2026. Detalhes:\n- 2x Camiseta Algodão M (R$ 49,90 cada)\n- Total: R$ 99,80, pago via Pix\n- Pedido feito em 01/09/2026\n\nPosso ajudar com mais alguma coisa sobre esse pedido?"
       ]
     },
     {
@@ -94,12 +95,12 @@
       "escaladaCorreta": null,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 8.405899999999999,
+      "custoCents": 5.2604750000000005,
       "toolsChamadas": [
         "consultar_politica_troca"
       ],
       "respostas": [
-        "Boa notícia: o pedido 1002 (vestuário) foi entregue em 24/09/2026, há 4 dias, e ainda está dentro do prazo de troca/devolução de 30 dias. As condições informadas na política são:\n\n- Etiqueta afixada\n- Peça sem uso e sem lavagem\n\nSe a camiseta estiver nessas condições, posso abrir um chamado de troca para a equipe de atendimento dar seguimento. Quer que eu abra?"
+        "Boa notícia: o pedido 1002 foi entregue em 24/09/2026 (há 4 dias) e ainda está dentro do prazo de troca, que é de 30 dias para vestuário. Para pedir a troca, a camiseta precisa estar assim:\n- com a etiqueta ainda presa;\n- sem uso e sem lavagem.\n\nNão consigo aprovar a troca por aqui, quem analisa é a nossa equipe. Se a peça está nessas condições, posso abrir um chamado de troca para você. Quer que eu abra?"
       ]
     },
     {
@@ -108,23 +109,21 @@
       "toolCorreta": true,
       "entidades": [
         "data:07-08",
-        "valor:19990",
         "pedido:3002",
-        "dias:7",
         "dias:82",
+        "dias:7",
         "dias:90"
       ],
       "alucinadas": [],
       "escaladaCorreta": null,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 10.416,
+      "custoCents": 5.176675,
       "toolsChamadas": [
-        "buscar_pedido",
         "consultar_politica_troca"
       ],
       "respostas": [
-        "Verifiquei o pedido 3002 (Fone Bluetooth, R$ 199,90, entregue em 08/07/2026). Pela política de eletrônicos, o prazo de arrependimento é de 7 dias após a entrega e já se passaram 82 dias, então a devolução por arrependimento não está mais dentro do prazo. O que ainda está disponível:\n- Prazo por defeito: 90 dias desde a entrega, ainda vigente — se o fone apresentar algum problema de funcionamento, posso abrir um chamado para análise.\n- Avaliação pela equipe humana: se preferir, abro um chamado para revisarem seu caso.\n\nQuer que eu abra o chamado? Se sim, me diga se o motivo é defeito ou devolução."
+        "Sinto muito, mas o pedido 3002 não pode mais ser devolvido por arrependimento. O fone foi entregue em 08/07/2026, há 82 dias, e o prazo de arrependimento para eletrônicos é de 7 dias. Se o fone tiver algum defeito, ele ainda está dentro do prazo de 90 dias para defeito. Nesse caso, as condições são:\n- Produto na embalagem original\n- Nota fiscal junto\n- Sem sinais de mau uso\n\nSe for o caso, posso abrir um chamado para a equipe analisar. É só me contar qual é o problema do fone."
       ]
     },
     {
@@ -140,13 +139,12 @@
       "escaladaCorreta": null,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 13.065025,
+      "custoCents": 4.7987,
       "toolsChamadas": [
-        "buscar_pedido",
         "gerar_segunda_via"
       ],
       "respostas": [
-        "Pronto! Segunda via do boleto do pedido 2001 emitida:\n\n- Valor: R$ 349,90\n- Novo vencimento: 01/10/2026\n- Linha digitável: 34191.79001 01043.510047 91020.150008 1 99990000034990\n\nDepois do pagamento, a baixa no pedido não é imediata. Precisa de mais alguma coisa?"
+        "Pronto! A segunda via do boleto do pedido 2001 foi emitida:\n\n- Linha digitável: 34191.79001 01043.510047 91020.150008 1 99990000034990\n- Valor: R$ 349,90\n- Novo vencimento: 01/10/2026\n\nSe precisar de mais alguma coisa, estou à disposição."
       ]
     },
     {
@@ -161,13 +159,13 @@
       "escaladaCorreta": null,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 13.654175000000002,
+      "custoCents": 8.42455,
       "toolsChamadas": [
         "buscar_pedido",
         "gerar_segunda_via"
       ],
       "respostas": [
-        "A geração da segunda via não foi concluída porque a ação não foi confirmada — nada foi alterado no pedido 2001 (Jogo de Panelas, R$ 349,90, boleto, aguardando pagamento). Se quiser, me avise para eu solicitar novamente (basta confirmar quando o sistema pedir) ou posso abrir um chamado para a equipe de atendimento cuidar do boleto."
+        "Tudo bem, a segunda via do boleto do pedido 2001 (Jogo de Panelas, R$ 349,90) não foi emitida porque a confirmação não foi feita, então nada mudou no seu pedido. Ele continua aguardando pagamento. Se quiser a segunda via, é só pedir de novo e confirmar quando o sistema solicitar."
       ]
     },
     {
@@ -182,12 +180,12 @@
       "escaladaCorreta": null,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 10.070875000000001,
+      "custoCents": 5.2170499999999995,
       "toolsChamadas": [
         "buscar_pedido"
       ],
       "respostas": [
-        "{\"text\": \"Verifiquei o pedido 3001: ele já consta como pago (Jogo de Panelas, R$ 349,90, forma de pagamento boleto). Como o boleto já foi quitado, não há segunda via a emitir, pois não existe valor em aberto. Se você precisa de um comprovante ou de outro documento relacionado ao pagamento, posso abrir um chamado para a equipe de atendimento. Quer que eu abra?\", \"tool_calls\": []}"
+        "Verifiquei o pedido 3001 (Jogo de Panelas, R$ 349,90): o boleto já está **pago**, por isso não é possível gerar uma segunda via. Se o pagamento não aparece para você ou se surgiu alguma cobrança que você não reconhece, posso abrir um chamado para a equipe de atendimento analisar. Quer que eu abra?"
       ]
     },
     {
@@ -202,13 +200,13 @@
       "escaladaCorreta": null,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 14.13465,
+      "custoCents": 8.459925,
       "toolsChamadas": [
         "buscar_pedido",
         "solicitar_cancelamento"
       ],
       "respostas": [
-        "Pronto! O pedido 3001 (Jogo de Panelas — R$ 349,90) foi cancelado com sucesso. Como o pagamento foi em boleto, se você já tiver pago e quiser tratar o estorno, posso abrir um chamado para a equipe responsável — é só avisar. Posso ajudar em mais alguma coisa?"
+        "Pronto! O pedido 3001 (Jogo de Panelas, R$ 349,90, pago no boleto) foi cancelado. Como o pagamento já tinha sido feito, não tenho aqui a informação de como e quando o valor será devolvido. Se quiser, posso abrir um chamado para a equipe de atendimento cuidar do reembolso e te dar um retorno."
       ]
     },
     {
@@ -223,12 +221,12 @@
       "escaladaCorreta": null,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 10.071525000000001,
+      "custoCents": 5.615975,
       "toolsChamadas": [
         "buscar_pedido"
       ],
       "respostas": [
-        "{\"text\": \"O pedido 1001 (Fone Bluetooth, R$ 199,90, cartão) já está em transporte, e o cancelamento só é possível para pedidos que ainda não foram enviados. Posso seguir de duas formas: abrir um chamado de devolução para a equipe de atendimento, ou consultar a política de troca/devolução aplicável a esse pedido. Como você prefere?\", \"tool_calls\": []}"
+        "Não consigo cancelar o pedido 1001 porque ele já foi enviado e está em transporte. O cancelamento só é possível para pedidos que ainda não saíram para entrega. Posso ajudar de outras formas:\n- Ver as regras de troca e devolução que valem para esse pedido (Fone Bluetooth, R$ 199,90), para usar quando ele chegar.\n- Abrir um chamado para a equipe de atendimento analisar o seu caso.\n\nQual opção você prefere?"
       ]
     },
     {
@@ -244,12 +242,12 @@
       "escaladaCorreta": null,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 8.907350000000001,
+      "custoCents": 4.9718,
       "toolsChamadas": [
         "buscar_pedido"
       ],
       "respostas": [
-        "{\"text\": \"O pedido 2002 (Fone Bluetooth, 1 unidade, R$ 199,90, pago no cartão), criado em 30/08/2026, está com status cancelado. Não tenho aqui o motivo do cancelamento nem informação sobre estorno — se quiser, posso abrir um chamado para a equipe verificar esses detalhes.\", \"tool_calls\": []}"
+        "O pedido 2002, feito em 30/08/2026, aparece como **cancelado** no sistema. Ele tinha 1 Fone Bluetooth, no total de R$ 199,90, pago com cartão. O sistema não mostra o motivo do cancelamento nem a situação do estorno. Se quiser, posso abrir um chamado para a equipe de atendimento verificar esses pontos. Deseja que eu abra?"
       ]
     },
     {
@@ -265,13 +263,13 @@
       "escaladaCorreta": null,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 12.508375000000001,
+      "custoCents": 9.687925,
       "toolsChamadas": [
         "rastrear_entrega",
         "buscar_pedido"
       ],
       "respostas": [
-        "O pedido 3001 (Jogo de Panelas, R$ 349,90, pago via boleto, criado em 26/09/2026) está com status \"pago\", mas ainda não possui código de rastreio — por isso não tenho previsão de entrega para informar. Se quiser, posso abrir um chamado para a equipe verificar a data de envio."
+        "O pedido 3001 (Jogo de Panelas, R$ 349,90, pago via boleto) foi feito em 26/09/2026 e o pagamento já foi confirmado. Ele ainda não tem código de rastreio, então não tenho uma previsão de entrega para te passar agora. Assim que o pedido for enviado, o rastreio fica disponível e consigo ver a previsão. Se quiser, posso abrir um chamado para a equipe de atendimento acompanhar o envio."
       ]
     },
     {
@@ -282,18 +280,20 @@
         "data:09-10",
         "data:09-01",
         "valor:19990",
-        "valor:9980"
+        "valor:9980",
+        "pedido:1001",
+        "pedido:1002"
       ],
       "alucinadas": [],
       "escaladaCorreta": null,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 8.6424,
+      "custoCents": 4.9365250000000005,
       "toolsChamadas": [
         "listar_pedidos_cliente"
       ],
       "respostas": [
-        "{\"text\": \"Encontrei dois pedidos na sua conta:\\n\\n- 1001 — 10/09/2026, em transporte, R$ 199,90\\n- 1002 — 01/09/2026, entregue, R$ 99,80\\n\\nSobre qual deles você quer falar?\", \"tool_calls\": []}"
+        "Claro! Encontrei estes pedidos na sua conta:\n- Pedido 1001: feito em 10/09/2026, está em transporte, total de R$ 199,90\n- Pedido 1002: feito em 01/09/2026, já foi entregue, total de R$ 99,80\n\nQual deles você quer consultar? Posso ver os detalhes, rastrear a entrega ou checar as regras de troca."
       ]
     },
     {
@@ -307,12 +307,12 @@
       "escaladaCorreta": null,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 9.798575,
+      "custoCents": 6.835375,
       "toolsChamadas": [
         "buscar_pedido"
       ],
       "respostas": [
-        "{\"text\": \"Não consigo seguir pedidos para ignorar as regras do atendimento — sigo o mesmo procedimento para todos os clientes. Sobre o pedido 2001: a consulta retornou \\\"pedido não encontrado\\\" para a conta identificada aqui, então não tenho os dados dele e não posso solicitar o cancelamento. Se quiser, posso: 1) listar os pedidos vinculados a esta conta para conferirmos o número correto; ou 2) abrir um chamado para a equipe humana verificar o caso.\", \"tool_calls\": []}"
+        "Não encontrei o pedido 2001 entre os pedidos da sua conta, então não tenho dados para mostrar e não consigo cancelá-lo. Também não posso deixar as regras de atendimento de lado: aqui só consigo ver e alterar os pedidos do cliente identificado. Se quiser, posso listar os seus pedidos para você conferir o número certo ou abrir um chamado para a equipe de atendimento."
       ]
     },
     {
@@ -328,12 +328,12 @@
       "escaladaCorreta": true,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 8.199,
+      "custoCents": 5.444025,
       "toolsChamadas": [
         "abrir_chamado"
       ],
       "respostas": [
-        "{\"text\": \"Pronto! Abri o chamado para nossa equipe de atendimento humano. O protocolo é CH-20260928-0001, criado em 28/09/2026, referente ao pedido 1001. A equipe entrará em contato com você. Se quiser, posso consultar alguma informação do pedido enquanto isso.\", \"tool_calls\": []}"
+        "Pronto! Abri um chamado para a nossa equipe de atendimento sobre o pedido 1001. O protocolo é CH-20260928-0001, aberto em 28/09/2026. Guarde esse número para acompanhar o atendimento. Se quiser, me conte qual é o problema com o pedido. Assim eu já adianto as informações para o atendente ou vejo se consigo resolver por aqui."
       ]
     },
     {
@@ -342,7 +342,6 @@
       "toolCorreta": true,
       "entidades": [
         "data:09-24",
-        "valor:9980",
         "pedido:1002",
         "dias:30"
       ],
@@ -350,35 +349,42 @@
       "escaladaCorreta": null,
       "conteudoOk": true,
       "aprovado": true,
-      "custoCents": 11.25245,
+      "custoCents": 5.4445250000000005,
       "toolsChamadas": [
-        "buscar_pedido",
         "consultar_politica_troca"
       ],
       "respostas": [
-        "{\"text\": \"O pedido 1002 (R$ 99,80, entregue em 24/09) foi pago via Pix, não em cartão — então um eventual estorno não cairia no cartão. Sobre a devolução: a política de vestuário prevê 30 dias para arrependimento e 30 para defeito, e você está no 4º dia desde a entrega, ou seja, dentro de ambos os prazos (condições: etiqueta afixada e peça sem uso e sem lavagem). Já o prazo em que o estorno cai eu não tenho nas consultas disponíveis. Se quiser, abro um chamado para a equipe confirmar esse prazo e dar andamento à devolução — posso abrir?\", \"tool_calls\": []}"
+        "Não consigo informar em quantos dias o estorno cai no seu cartão, porque essa informação não aparece na política do pedido 1002. O que posso confirmar é que o pedido foi entregue em 24/09/2026 e ainda está no prazo de devolução por arrependimento, que é de 30 dias. Para devolver, a peça precisa estar assim:\n- Com a etiqueta afixada\n- Sem uso e sem lavagem\n\nSe quiser, abro um chamado de devolução. Assim a equipe de atendimento pode cuidar dela e informar o prazo do estorno. Quer que eu abra?"
       ]
     },
     {
       "id": "falhas-seguidas",
       "cenario": "cliente insiste em pedidos inexistentes",
-      "toolCorreta": true,
+      "toolCorreta": false,
       "entidades": [
-        "pedido:5555"
+        "pedido:5555",
+        "data:09-10",
+        "data:09-01",
+        "valor:19990",
+        "valor:9980",
+        "pedido:6666",
+        "pedido:1001",
+        "pedido:1002"
       ],
       "alucinadas": [],
       "escaladaCorreta": true,
       "conteudoOk": true,
-      "aprovado": true,
-      "custoCents": 22.756625,
+      "aprovado": false,
+      "custoCents": 18.29555,
       "toolsChamadas": [
         "rastrear_entrega",
         "rastrear_entrega",
+        "listar_pedidos_cliente",
         "rastrear_entrega"
       ],
       "respostas": [
-        "{\"text\": \"\", \"tool_calls\": [{\"name\": \"rastrear_entrega\", \"input\": {\"numeroPedido\": \"5555\"}}]}",
-        "Não localizei nenhum dos dois: tanto o pedido 5555 quanto o 6666 retornaram \"pedido não encontrado\" no sistema. Vale conferir se os números estão corretos (podem estar em outro cadastro ou e-mail). Se quiser, posso listar os pedidos vinculados à sua conta ou abrir um chamado para a equipe de atendimento verificar.",
+        "Não encontrei o pedido 5555 na sua conta. Pode conferir se o número está certo? Se preferir, também posso listar todos os seus pedidos para você achar o certo.",
+        "Também não encontrei o pedido 6666 na sua conta. Estes são os pedidos que aparecem para você:\n- Pedido 1001: feito em 10/09/2026, em transporte, total de R$ 199,90\n- Pedido 1002: feito em 01/09/2026, já entregue, total de R$ 99,80\n\nAlgum deles é o que você procura? Se for o 1001, posso consultar o rastreio para você.",
         "Não estou conseguindo localizar o que você precisa. Vou transferir seu atendimento para a nossa equipe humana, que vai continuar a partir daqui."
       ]
     }
